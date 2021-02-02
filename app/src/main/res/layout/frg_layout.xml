@@ -5,13 +5,20 @@
 
         <variable
             name="vm"
-            type="com.tson.easy.sample.model.Main2ViewModel" />
+            type="com.tson.easy.frg.model.FrgModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#30000000"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="fragment layout" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,14 +26,9 @@
             android:text="下面就是loadingView" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:tag="loadingView" />
-
-        <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
@@ -47,5 +49,12 @@
                 android:onClick="@{()->vm.error()}"
                 android:text="显示error信息" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:tag="loadingView" />
+
+
     </LinearLayout>
 </layout>

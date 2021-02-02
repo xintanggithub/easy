@@ -1,20 +1,20 @@
-package com.tson.easy.activity
+package com.tson.easy.fragment
 
 import androidx.databinding.ViewDataBinding
 import com.tson.easy.model.BaseViewModel
 
 /**
- *  Date 2021/2/2 1:20 PM
+ *  Date 2021/2/2 3:41 PM
  *
  * @author Tson
  */
-abstract class EasyBaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>) :
+abstract class EasyBaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>?) :
     BindLoadingView<T, E>(modelClass) {
 
     override fun requestLoadingViewId(): Int = -1
 
-    override fun initLoadingViewEnd() {}
-
     override fun defaultHideLoadingView() {}
+
+    override fun initLoadingViewEnd() {}
 
 }

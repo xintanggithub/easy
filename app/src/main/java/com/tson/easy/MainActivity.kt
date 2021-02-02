@@ -3,6 +3,7 @@ package com.tson.easy
 import android.content.Intent
 import android.widget.Toast
 import com.tson.easy.databinding.ActivityMainBinding
+import com.tson.easy.frg.TestFragment
 import com.tson.easy.sample.MyBaseActivity
 import com.tson.easy.sample.model.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,6 +17,10 @@ class MainActivity(override val layoutId: Int = R.layout.activity_main) :
     }
 
     override fun initView() {
+        supportFragmentManager.beginTransaction().also {
+            it.replace(R.id.fgBase, TestFragment())
+            it.commitAllowingStateLoss()
+        }
         openTwo.setOnClickListener {
             startActivity(Intent(this, Main2Activity::class.java))
         }
