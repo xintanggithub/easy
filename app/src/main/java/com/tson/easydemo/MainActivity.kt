@@ -7,8 +7,6 @@ import com.tson.easydemo.model.MainViewModel
 class MainActivity(override val layoutId: Int = R.layout.activity_main) :
     BaseActivity<ActivityMainBinding, MainViewModel>(MainViewModel::class.java) {
 
-    override fun requestLoadingViewId(): Int = R.layout.loading_layout
-
     override fun initView() {
 
     }

@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.tson.easy.activity.EasyBaseActivity
 import com.tson.easy.model.BaseViewModel
+import com.tson.easydemo.R
 import com.tson.easydemo.databinding.LoadingLayoutBinding
 import com.tson.easydemo.model.LoadingViewModel
 
@@ -17,7 +18,10 @@ abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
     EasyBaseActivity<T, E>(modelClass) {
 
     lateinit var loadingBinding: LoadingLayoutBinding
+
     lateinit var loadingViewModel: LoadingViewModel
+
+    override fun requestLoadingViewId(): Int = R.layout.loading_layout
 
     override fun defaultHideLoadingView() {
         super.defaultHideLoadingView()
