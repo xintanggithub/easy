@@ -8,8 +8,7 @@ import com.tson.easy.model.BaseViewModel
  *
  * @author Tson
  */
-abstract class EasyBaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>?) :
-    BindLoadingView<T, E>(modelClass) {
+abstract class EasyBaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>?) : BindLoadingView<T, E>(modelClass) {
 
     override fun requestLoadingViewId(): Int = -1
 

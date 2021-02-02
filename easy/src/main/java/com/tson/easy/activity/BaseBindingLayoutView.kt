@@ -12,8 +12,7 @@ import com.tson.easy.model.BaseViewModel
  *
  * @author Tson
  */
-abstract class BaseBindingLayoutView<T : ViewDataBinding, E : BaseViewModel>(private var modelClass: Class<E>) :
-    BeforeActivity() {
+abstract class BaseBindingLayoutView<T : ViewDataBinding, E : BaseViewModel>(private var modelClass: Class<E>) : BeforeActivity() {
 
     abstract val layoutId: Int
 

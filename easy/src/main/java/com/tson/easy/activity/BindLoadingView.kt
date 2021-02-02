@@ -20,7 +20,9 @@ abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClas
     protected lateinit var loadingView: View
 
     abstract fun defaultHideLoadingView()
+
     abstract fun initView()
+
     abstract fun initLoadingViewEnd()
 
     override fun bindingEnd() {
@@ -62,6 +64,5 @@ abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClas
             throw Exception("activity contentView != ViewGroup")
         }
     }
-
 
 }

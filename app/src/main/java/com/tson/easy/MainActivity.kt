@@ -1,29 +1,13 @@
 package com.tson.easy
 
-import android.content.Intent
-import android.widget.Toast
-import com.tson.easy.databinding.ActivityMainBinding
-import com.tson.easy.frg.TestFragment
-import com.tson.easy.sample.MyBaseActivity
-import com.tson.easy.sample.model.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity(override val layoutId: Int = R.layout.activity_main) :
-    MyBaseActivity<ActivityMainBinding, MainViewModel>(MainViewModel::class.java) {
+class MainActivity : AppCompatActivity() {
 
-    override fun retry() {
-        super.retry()
-        Toast.makeText(this, "重试", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun initView() {
-        supportFragmentManager.beginTransaction().also {
-            it.replace(R.id.fgBase, TestFragment())
-            it.commitAllowingStateLoss()
-        }
-        openTwo.setOnClickListener {
-            startActivity(Intent(this, Main2Activity::class.java))
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
     }
 
 }

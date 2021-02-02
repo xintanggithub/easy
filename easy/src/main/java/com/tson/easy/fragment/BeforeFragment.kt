@@ -22,6 +22,7 @@ abstract class BeforeFragment<T : ViewDataBinding, E : BaseViewModel>(var modelC
     Fragment() {
 
     protected lateinit var mBinding: T
+
     protected lateinit var viewModel: E
 
     abstract val layoutId: Int
