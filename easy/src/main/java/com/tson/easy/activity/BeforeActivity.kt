@@ -10,6 +10,10 @@ import androidx.fragment.app.FragmentActivity
  */
 abstract class BeforeActivity : FragmentActivity() {
 
+    companion object {
+        const val LOADING_VIEW_TAG = "loadingView"
+    }
+
     abstract fun initBefore()
 
     abstract fun bindModel()

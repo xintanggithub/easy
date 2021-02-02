@@ -2,6 +2,7 @@ package com.tson.easy.activity
 
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
 import com.tson.easy.BR
 import com.tson.easy.application.EasyApplication
 import com.tson.easy.model.BaseViewModel
@@ -11,7 +12,7 @@ import com.tson.easy.model.BaseViewModel
  *
  * @author Tson
  */
-abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(private var modelClass: Class<E>) :
+abstract class BaseBindingLayoutView<T : ViewDataBinding, E : BaseViewModel>(private var modelClass: Class<E>) :
     BeforeActivity() {
 
     abstract val layoutId: Int
@@ -22,14 +23,17 @@ abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(private var 
 
     override fun initBefore() {}
 
-    abstract fun initView()
+    protected abstract fun bindingEnd()
 
     override fun bindModel() {
         mBinding = DataBindingUtil.setContentView(this, layoutId)
-        viewModel = EasyApplication.of().get(modelClass)
+        viewModel = getViewModel(modelClass)
         viewModel.initModel()
         mBinding.setVariable(BR.vm, viewModel)
-        initView()
+        bindingEnd()
     }
 
+    protected fun <T : ViewModel> getViewModel(modelClass: Class<T>): T {
+        return EasyApplication.of().get(modelClass)
+    }
 }
