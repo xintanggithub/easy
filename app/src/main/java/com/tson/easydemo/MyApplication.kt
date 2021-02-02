@@ -1,4 +1,4 @@
-package com.tson.easy
+package com.tson.easydemo
 
 import com.tson.easy.application.EasyApplication
 

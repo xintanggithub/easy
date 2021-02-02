@@ -4,13 +4,16 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.tson.easydemo.model.MainViewModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context="com.tson.easydemo.MainActivity">
 
         <TextView
             android:layout_width="wrap_content"
