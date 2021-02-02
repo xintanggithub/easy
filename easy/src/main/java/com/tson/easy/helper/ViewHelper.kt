@@ -10,17 +10,18 @@ import com.tson.easy.activity.BeforeActivity
  * @author Tson
  */
 object ViewHelper {
-     fun looperQueryLoadingView(view: View): ViewGroup? {
+    fun looperQueryLoadingView(view: View): ViewGroup? {
         if (view is ViewGroup) {
             view.childCount.also {
                 if (it > 0) {
                     for (n in 0 until it) {
                         val tempChildrenView = view.getChildAt(n)
-                        return if (tempChildrenView is ViewGroup) {
-                            if (BeforeActivity.LOADING_VIEW_TAG == tempChildrenView.tag) {
+                        if (tempChildrenView is ViewGroup) {
+                            return if (BeforeActivity.LOADING_VIEW_TAG == tempChildrenView.tag) {
                                 tempChildrenView
                             } else {
-                                looperQueryLoadingView(tempChildrenView)
+                                val result = looperQueryLoadingView(tempChildrenView)
+                                result ?: continue
                             }
                         } else {
                             continue
