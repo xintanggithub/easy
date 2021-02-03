@@ -1,3 +1,4 @@
+include ':view'
 include ':easy'
 include ':app'
 rootProject.name = "easyBase"
