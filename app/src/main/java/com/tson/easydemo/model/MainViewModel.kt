@@ -3,6 +3,11 @@ package com.tson.easydemo.model
 import android.os.Handler
 import androidx.databinding.ObservableField
 import com.tson.easy.model.BaseViewModel
+import com.tson.easydemo.api.LoginRequest
+import com.tson.easydemo.api.TestApi
+import com.tson.http.Request
+import com.tson.http.config.HttpConfig
+import com.tson.http.factory.RetrofitFactory
 
 /**
  *  Date 2021/2/2 4:58 PM
@@ -11,6 +16,27 @@ import com.tson.easy.model.BaseViewModel
  */
 class MainViewModel : BaseViewModel() {
 
+    lateinit var api: TestApi
+
+    override fun initModel() {
+        super.initModel()
+
+        HttpConfig.instance.host("http://channel.xtcodev.cn/")
+        if (!this::api.isInitialized) {
+            api = RetrofitFactory.defaultCreateApi(TestApi::class.java)
+        }
+    }
+
+    private fun getData() {
+        Request.call({ api.login(LoginRequest()) }, {
+            loadStatus.showLoading()
+        }, {
+            loadStatus.hideLoading()
+        }, {
+            loadStatus.error(it)
+        })
+    }
+
     fun userLoadingViewMethod() {
         loadStatus.showLoading() // 显示
         loadStatus.hideLoading() // 隐藏
@@ -18,27 +44,10 @@ class MainViewModel : BaseViewModel() {
         loadStatus.retry() //重试
     }
 
-    var count = 1
-    var loading = false
-
     var status = ObservableField(false)
 
     fun startLoading() {
-        if (loading) {
-            return
-        }
-        count++
-        loading = true
-        loadStatus.showLoading()
-        Handler().postDelayed({
-            status.set(count % 2 == 0)
-            if (true == status.get()) {
-                loadStatus.error(Exception("加载失败了"))
-            } else {
-                loadStatus.hideLoading()
-            }
-            loading = false
-        }, 3000)
+        getData()
     }
 
 }
