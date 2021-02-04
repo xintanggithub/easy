@@ -213,6 +213,8 @@ abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
 ```
 class MainViewModel : BaseViewModel() {
 
+    var content = ObservableField("hello world！")
+
     fun userLoadingViewMethod() {
         loadStatus.showLoading() // 显示
         loadStatus.hideLoading() // 隐藏
@@ -221,5 +223,7 @@ class MainViewModel : BaseViewModel() {
     }
 }
 ```
+
+BaseFragment同理，只是更改一下继承为EasyBaseFragment即可，所以baseActivity和BaseFragment中的公共loadingView也可以抽出来，给baseActivity和BaseFragment共用。
 
 end
