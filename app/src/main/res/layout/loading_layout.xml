@@ -6,13 +6,15 @@
         <variable
             name="loading"
             type="com.tson.easydemo.model.LoadingViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:background="@color/cardview_shadow_start_color"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
@@ -21,5 +23,11 @@
             android:text="@{loading.loadingMessage}"
             android:textSize="22sp" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->loading.retry()}"
+            android:text="重试"
+            android:visibility="@{loading.loadingMessage.contains(`错误`)?View.VISIBLE:View.GONE}" />
     </LinearLayout>
 </layout>

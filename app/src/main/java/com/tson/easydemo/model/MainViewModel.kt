@@ -11,6 +11,13 @@ import com.tson.easy.model.BaseViewModel
  */
 class MainViewModel : BaseViewModel() {
 
+    fun userLoadingViewMethod() {
+        loadStatus.showLoading() // 显示
+        loadStatus.hideLoading() // 隐藏
+        loadStatus.error(Exception("error message")) //错误
+        loadStatus.retry() //重试
+    }
+
     var count = 1
     var loading = false
 

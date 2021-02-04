@@ -33,11 +33,10 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:gravity="center_horizontal"
-                android:paddingTop="200dp"
                 android:text="@{vm.status?`加载失败`:`加载成功`}" />
 
             <LinearLayout
@@ -45,11 +44,11 @@
                 android:layout_height="match_parent"
                 android:gravity="center">
                 <!-- todo 解除注释，则会在下面的LinearLayout进行加载效果、error等，注释掉，则是全屏显示-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:tag="loadingView" />
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:gravity="center"-->
+<!--                    android:tag="loadingView" />-->
             </LinearLayout>
         </RelativeLayout>
 
