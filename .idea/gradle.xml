@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/easy" />
             <option value="$PROJECT_DIR$/http" />
+            <option value="$PROJECT_DIR$/log" />
             <option value="$PROJECT_DIR$/view" />
           </set>
         </option>

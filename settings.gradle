@@ -1,3 +1,4 @@
+include ':log'
 include ':http'
 include ':view'
 include ':easy'
