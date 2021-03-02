@@ -39,7 +39,7 @@ uploadArchives {
         repository(url: 'file:///Users/tangxin/work/maven')
         pom.groupId = 'com.easy.assembly.http'
         pom.artifactId = 'lib'
-        pom.version = '1.0.0'
+        pom.version = '1.0.1'
     }
 
 }
@@ -57,5 +57,6 @@ dependencies {
     //Retrofit网络请求
     api "com.squareup.retrofit2:retrofit:2.6.2"
     api "com.squareup.retrofit2:converter-gson:2.6.2"
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 }
