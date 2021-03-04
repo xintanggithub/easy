@@ -98,7 +98,11 @@ public class TLRDefFootView extends LinearLayout implements TLRUIHandler {
     public void onFinish(View target, boolean isRefresh, boolean isSuccess, int errorCode) {
         mTextView.setText(R.string.tlr_def_foot_load_complete);
         if (!isRefresh) {
-            mAnimationDrawable.stop();
+            try {
+                mAnimationDrawable.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             mImageView.setRotation(180);
             mImageView.setImageResource(R.drawable.tlr_def_load);
         }

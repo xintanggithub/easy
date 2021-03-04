@@ -5,11 +5,9 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.tson.view.R;
 import com.tson.view.list.pull.TLRLinearLayout.LoadStatus;
 import com.tson.view.list.pull.TLRLinearLayout.RefreshStatus;
-
-
-import com.tson.view.R;
 
 class TLRStatusController {
 
@@ -224,7 +222,7 @@ class TLRStatusController {
         if (isRefreshing) {
             isRefreshing = false;
         } else {
-            throw new RuntimeException("not refreshing, can not finish refresh");
+            Log.e(TAG, "not refreshing, can not finish refresh");
         }
     }
 
@@ -232,7 +230,7 @@ class TLRStatusController {
         if (isLoading) {
             isLoading = false;
         } else {
-            throw new RuntimeException("not loading, can not finish load");
+            Log.e(TAG, "not loading, can not finish load");
         }
     }
 
