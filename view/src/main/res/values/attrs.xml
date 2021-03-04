@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TLRLinearLayout">
+        <attr name="enableRefresh" format="boolean"/>
+        <attr name="enableLoad" format="boolean"/>
+        <attr name="refreshThreshold" format="float"/>
+        <attr name="loadThreshold" format="float"/>
+        <attr name="refreshMaxMoveDistance" format="dimension"/>
+        <attr name="loadMaxMoveDistance" format="dimension"/>
+        <attr name="closeAnimDuration" format="integer"/>
+        <attr name="openAnimDuration" format="integer"/>
+        <attr name="resistance" format="float"/>
+        <attr name="releaseRefresh" format="boolean"/>
+        <attr name="releaseLoad" format="boolean"/>
+        <attr name="keepHeadRefreshing" format="boolean"/>
+        <attr name="keepFootLoading" format="boolean"/>
+        <attr name="keepContentLayout">
+            <flag name="refresh" value="0x01"/>
+            <flag name="load" value="0x02"/>
+        </attr>
+        <attr name="canMoveHeadByTLR" format="boolean"/>
+        <attr name="canMoveFootByTLR" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="TLRLinearLayout_Layout">
+        <attr name="label" format="enum">
+            <enum name="head" value="1"/>
+            <enum name="content" value="2"/>
+            <enum name="foot" value="3"/>
+        </attr>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,938 @@
+package com.tson.view.list.pull;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import androidx.core.view.ViewCompat;
+
+import com.tson.view.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Date 2021/3/4 10:20 AM
+ *
+ * @author Tson
+ */
+public class TLRLinearLayout extends ViewGroup {
+
+    private static final String TAG = "TLRLinearLayout";
+
+    private static final boolean DEBUG = false;
+    public static final int LABEL_HEAD = 1;
+    public static final int LABEL_CONTENT = 2;
+    public static final int LABEL_FOOT = 3;
+
+    public static final int FLAG_KEEP_CONTENT_REFRESH = 0x01;
+    public static final int FLAG_KEEP_CONTENT_LOAD = 0x02;
+
+    /**
+     * 上拉加载功能是否可用
+     */
+    private boolean isEnableLoad = false;
+    /**
+     * 下拉刷新功能是否可用
+     */
+    private boolean isEnableRefresh = false;
+    /**
+     * 操作过程中是否保持contentLayout不移动
+     */
+    private int keepContentLayoutFlag = 0x00;
+
+    /**
+     * TLR 是否可以移动head
+     */
+    private boolean canMoveHeadByTLR = true;
+
+    /**
+     * TLR 是否可以移动foot
+     */
+    private boolean canMoveFootByTLR = true;
+
+    private View mHeaderView;
+    /**
+     * flag is {@link TLRLinearLayout#LABEL_CONTENT} view,
+     * 只有标记为content的view才能触发刷新或加载操作
+     */
+    private List<View> mContentViews;
+    /**
+     * 需要向ContentLayout中添加的子view
+     */
+    private List<View> mContentChilds;
+    private View mContentView;
+    private View mFooterView;
+    private TLRCalculator mCalculator;
+    private TLRUiHandlerWrapper mUiHandlerWrapper;
+    private boolean isAddViewSelf = false;
+    private View mTouchView;
+
+    /**
+     * 刷新状态
+     */
+    public enum RefreshStatus {
+        IDLE, PULL_DOWN, RELEASE_REFRESH, REFRESHING
+    }
+
+    /**
+     * 加载状态
+     */
+    public enum LoadStatus {
+        IDLE, PULL_UP, RELEASE_LOAD, LOADING
+    }
+
+    public TLRLinearLayout(Context context) {
+        this(context, null);
+    }
+
+    public TLRLinearLayout(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public TLRLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initAttrs(attrs);
+        setWillNotDraw(false);
+        mUiHandlerWrapper = new TLRUiHandlerWrapper();
+        mCalculator = new TLRCalculator(this, attrs);
+        mCalculator.setTLRUiHandler(mUiHandlerWrapper);
+        mContentViews = new ArrayList<>();
+        mContentChilds = new ArrayList<>();
+    }
+
+    private void initAttrs(AttributeSet attrs) {
+        TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.TLRLinearLayout);
+        if (array == null) {
+            Log.d(TAG, "initAttrs array is null");
+            return;
+        }
+        try {
+            final int N = array.getIndexCount();
+            for (int i = 0; i < N; i++) {
+                int index = array.getIndex(i);
+                if (index == R.styleable.TLRLinearLayout_enableLoad) {
+                    isEnableLoad = array.getBoolean(index, false);
+                    Log.d(TAG, "isEnableLoad = " + isEnableLoad);
+                } else if (index == R.styleable.TLRLinearLayout_enableRefresh) {
+                    isEnableRefresh = array.getBoolean(index, false);
+                    Log.d(TAG, "isEnableRefresh = " + isEnableRefresh);
+                } else if (index == R.styleable.TLRLinearLayout_keepContentLayout) {
+                    keepContentLayoutFlag = array.getInt(index, keepContentLayoutFlag);
+                } else if (index == R.styleable.TLRLinearLayout_canMoveHeadByTLR) {
+                    canMoveHeadByTLR = array.getBoolean(index, canMoveHeadByTLR);
+                    Log.d(TAG, "canMoveHeadByTLR = " + canMoveHeadByTLR);
+                } else if (index == R.styleable.TLRLinearLayout_canMoveFootByTLR) {
+                    canMoveFootByTLR = array.getBoolean(index, canMoveFootByTLR);
+                    Log.d(TAG, "canMoveFootByTLR = " + canMoveFootByTLR);
+                }
+            }
+        } finally {
+            array.recycle();
+        }
+        Log.d(TAG, "keepContentLayoutFlag = " + keepContentLayoutFlag);
+    }
+
+    private void addSelfView(View child, int index, ViewGroup.LayoutParams params) {
+        isAddViewSelf = true;
+        addView(child, index, params);
+        isAddViewSelf = false;
+    }
+
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        if (index == 0 && !isAddViewSelf) {
+            Log.e(TAG,"can't add view index 0!!!");
+            return;
+        }
+        super.addView(child, index, params);
+
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            LayoutParams params = (LayoutParams) child.getLayoutParams();
+            Log.d(TAG,"child = " + child.getClass().getSimpleName() + " params.label = "
+                    + params.label);
+            if (params.label == LABEL_HEAD) {
+                if (i != 0) {
+                    throw new RuntimeException("head must in first");
+                }
+                setHeaderView(true, child);
+            } else if (params.label == LABEL_FOOT) {
+                if (i != count - 1) {
+                    throw new RuntimeException("foot must in last!!!");
+                }
+                setFooterView(true, child);
+            } else if (params.label == LABEL_CONTENT) {
+                mContentViews.add(child);
+                mContentChilds.add(child);
+            } else {
+                mContentChilds.add(child);
+            }
+        }
+
+        if (mHeaderView == null) {
+            Log.e(TAG,"has not header view!!!");
+            if (isEnableRefresh) {
+                Log.v(TAG,"use default head view!!!");
+                setHeaderView(false, new TLRDefHeadView(getContext()));
+            }
+        }
+
+        if (mFooterView == null) {
+            Log.e(TAG,"has not footer view!");
+            if (isEnableLoad()) {
+                Log.v(TAG,"use default foot view!!!");
+                setFooterView(false, new TLRDefFootView(getContext()));
+            }
+        }
+
+        int contentChildSize = mContentChilds.size();
+        if (contentChildSize == 0) {
+            throw new RuntimeException("must have content view !!!");
+        } else if (contentChildSize == 1) {
+            removeView(mContentChilds.get(0));
+            mContentView = mContentChilds.get(0);
+        } else {
+            LinearLayout layout = new LinearLayout(getContext());
+            layout.setOrientation(LinearLayout.VERTICAL);
+            for (View view : mContentChilds) {
+                removeView(view);
+                ViewGroup.MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(params);
+                layout.addView(view, llp);
+            }
+            Log.d(TAG,"ContentLayout child count:" + contentChildSize);
+            mContentView = layout;
+        }
+
+        addSelfView(mContentView, 0,
+                new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return dispatchTouchEvent(false, ev);
+    }
+
+    boolean dispatchTouchEvent(boolean childIntercepted, MotionEvent ev) {
+        if (childIntercepted) {
+            return super.dispatchTouchEvent(ev);
+        }
+        if (!isEnableLoad() && !isEnableRefresh()) {
+            return super.dispatchTouchEvent(ev);
+        }
+        if (mCalculator.hasAnyAnimatorRunning()) {
+            return super.dispatchTouchEvent(ev);
+        }
+
+        int action = ev.getAction();
+        float x = ev.getX();
+        float y = ev.getY();
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                if (!isRefreshing() && !isLoading()) {
+                    setTouchView(x, y);
+                }
+                mCalculator.eventDown(x, y);
+                super.dispatchTouchEvent(ev);
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                mCalculator.eventMove(x, y);
+                if (!mCalculator.isBackStatus()) {
+                    mCalculator.touchMoveLayoutView();
+                    return true;
+                }
+                if (mCalculator.canCalculatorV()
+                        && (isTouchMoveRefresh(x, y) || isTouchMoveLoad(x, y))) {
+                    ev.setAction(MotionEvent.ACTION_CANCEL);
+                    super.dispatchTouchEvent(ev);
+                    mCalculator.touchMoveLayoutView();
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mCalculator.eventUp(x, y);
+                break;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int count = getChildCount();
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            if (child.getVisibility() != GONE) {
+                // Measure the child.
+                measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
+                if (child.equals(mContentView)) {
+                    width = child.getMeasuredWidth();
+                    height = child.getMeasuredHeight();
+                } else if (child.equals(mHeaderView)) {
+                    mCalculator.setHeadViewHeight(child.getMeasuredHeight());
+                } else if (child.equals(mFooterView)) {
+                    mCalculator.setFootViewHeight(child.getMeasuredHeight());
+                }
+                if (DEBUG) {
+                    Log.d(TAG,child.getClass().getSimpleName() + " mw:" + child.getMeasuredWidth()
+                            + " mh:" + child.getMeasuredHeight());
+                }
+            }
+        }
+        setMeasuredDimension(width, height);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int totalOffsetY = mCalculator.getTotalOffsetY();
+
+        int parentLeft = getPaddingLeft();
+        int parentTop = getPaddingTop();
+        int parentBottom = parentTop + getMeasuredHeight();
+
+        if (mContentView != null && mContentView.getVisibility() != GONE) {
+            LayoutParams lp = (LayoutParams) mContentView.getLayoutParams();
+            int left = parentLeft + lp.leftMargin;
+            int top = parentTop + lp.topMargin;
+
+            if (mCalculator.getTotalOffsetY() > 0
+                    && (keepContentLayoutFlag & FLAG_KEEP_CONTENT_REFRESH) == 0) {
+                top += totalOffsetY;
+            } else if (mCalculator.getTotalOffsetY() < 0
+                    && (keepContentLayoutFlag & FLAG_KEEP_CONTENT_LOAD) == 0) {
+                top += totalOffsetY;
+            }
+
+            int right = left + mContentView.getMeasuredWidth();
+            int bottom = top + mContentView.getMeasuredHeight();
+
+            if (DEBUG) {
+                Log.d(TAG, "ContentLayout left:" + left + " right:" + right + " top:" + top
+                        + " bottom:" + bottom);
+            }
+
+            mContentView.layout(left, top, right, bottom);
+        }
+
+        if (mHeaderView != null && mHeaderView.getVisibility() != GONE) {
+            LayoutParams lp = (LayoutParams) mHeaderView.getLayoutParams();
+            int left = parentLeft + lp.leftMargin;
+            int bottom = parentTop - lp.bottomMargin;//layout head calculator bottom first
+            if (isEnableRefresh && canMoveHeadByTLR) { //refresh is enabled
+                bottom += totalOffsetY;
+            }
+            int right = left + mHeaderView.getMeasuredWidth();
+            int top = bottom - mHeaderView.getMeasuredHeight();
+
+            if (DEBUG) {
+                Log.d(TAG, "HeaderView left:" + left + " right:" + right + " top:" + top + " bottom:"
+                        + bottom);
+            }
+
+            mHeaderView.layout(left, top, right, bottom);
+        }
+
+        if (mFooterView != null && mFooterView.getVisibility() != GONE) {
+            LayoutParams lp = (LayoutParams) mFooterView.getLayoutParams();
+            int left = parentLeft + lp.leftMargin;
+            int top = parentBottom + lp.topMargin;//layout foot calculator top first
+            if (isEnableLoad && canMoveFootByTLR) { //load is enabled
+                top += totalOffsetY;
+            }
+            int right = left + mFooterView.getMeasuredWidth();
+            int bottom = top + mFooterView.getMeasuredHeight();
+
+            if (DEBUG) {
+                Log.d(TAG, "FooterView left:" + left + " right:" + right + " top:" + top + " bottom:"
+                        + bottom);
+            }
+
+            mFooterView.layout(left, top, right, bottom);
+        }
+    }
+
+    void move(int y) {
+        if (isEnableRefresh() && isCanMoveHeadByTLR() && mHeaderView != null) {
+            mHeaderView.offsetTopAndBottom(y);
+        }
+        if (isEnableLoad() && isCanMoveFootByTLR() && mFooterView != null) {
+            mFooterView.offsetTopAndBottom(y);
+        }
+        if (mCalculator.getTotalOffsetY() > 0
+                && (keepContentLayoutFlag & FLAG_KEEP_CONTENT_REFRESH) == 0) {
+            mContentView.offsetTopAndBottom(y);
+        } else if (mCalculator.getTotalOffsetY() < 0
+                && (keepContentLayoutFlag & FLAG_KEEP_CONTENT_LOAD) == 0) {
+            mContentView.offsetTopAndBottom(y);
+        }
+    }
+
+    /**
+     * call by child
+     */
+    TLRCalculator calculator() {
+        return mCalculator;
+    }
+
+    private void setTouchView(float downx, float downy) {
+        for (View view : mContentViews) {
+            if (inView(view, downx, downy)) {
+                setTouchView(view);
+                break;
+            }
+        }
+    }
+
+    void setTouchView(View touchView) {
+        if (mTouchView != touchView) {
+            mTouchView = touchView;
+        }
+    }
+
+    View getTouchView() {
+        return mTouchView;
+    }
+
+    private boolean isTouchMoveRefresh(float x, float y) {
+        boolean refresh = false;
+        for (View view : mContentViews) {
+            if (isTouchViewRefresh(view, x, y)) {
+                refresh = true;
+                break;
+            }
+        }
+        refresh &= isEnableRefresh();
+        if (DEBUG) {
+            Log.d(TAG, "isTouchMoveRefresh refresh:" + refresh);
+        }
+        return refresh;
+    }
+
+    private boolean isTouchMoveLoad(float x, float y) {
+        boolean load = false;
+        for (View view : mContentViews) {
+            if (isTouchViewLoad(view, x, y)) {
+                load = true;
+                break;
+            }
+        }
+        load &= isEnableLoad();
+        if (DEBUG) {
+            Log.d(TAG, "isTouchMoveLoad load:" + load);
+        }
+        return load;
+    }
+
+    private boolean inView(View view, float x, float y) {
+        final int scrollY = getScrollY();
+        return !(y < view.getTop() - scrollY
+                || y >= view.getBottom() - scrollY
+                || x < view.getLeft()
+                || x >= view.getRight());
+    }
+
+    private boolean isTouchViewRefresh(View target, float x, float y) {
+        boolean inView = inView(target, x, y);
+        if (inView && mCalculator.getDirection() == TLRCalculator.Direction.DOWN) {
+            return isViewRefresh(target);
+        }
+        return false;
+    }
+
+    private boolean isTouchViewLoad(View target, float x, float y) {
+        boolean inView = inView(target, x, y);
+        if (inView && mCalculator.getDirection() == TLRCalculator.Direction.UP) {
+            return isViewLoad(target);
+        }
+        return false;
+    }
+
+    private boolean isViewRefresh(View target) {
+        return !ViewCompat.canScrollVertically(target, -1);
+    }
+
+    private boolean isViewLoad(View target) {
+        return !ViewCompat.canScrollVertically(target, 1);
+    }
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof LayoutParams;
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(getContext());
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(), attrs);
+    }
+
+    @Override
+    protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return generateDefaultLayoutParams();
+    }
+
+    /**
+     * start auto refresh
+     */
+    public void autoRefresh() {
+        mCalculator.startAutoRefresh();
+    }
+
+    /**
+     * finish refresh success or not
+     */
+    public void finishRefresh(boolean isSuccess) {
+        finishRefresh(isSuccess, -1);
+    }
+
+    /**
+     * finish refresh success or not, cotain errorCode
+     */
+    public void finishRefresh(boolean isSuccess, int errorCode) {
+        mCalculator.finishRefresh(isSuccess, errorCode);
+    }
+
+    /**
+     * finish load success or not
+     */
+    public void finishLoad(boolean isSuccess) {
+        finishLoad(isSuccess, -1);
+    }
+
+    /**
+     * finish load success or not, cotain errorCode
+     */
+    public void finishLoad(boolean isSuccess, int errorCode) {
+        mCalculator.finishLoad(isSuccess, errorCode);
+    }
+
+    /**
+     * add {@link TLRUIHandler} callback
+     */
+    public void addTLRUiHandler(TLRUIHandler handler) {
+        mUiHandlerWrapper.addTLRUiHandler(handler);
+    }
+
+    /**
+     * remove {@link TLRUIHandler} callback
+     */
+    public void removeTLRUiHandler(TLRUIHandler handler) {
+        mUiHandlerWrapper.removeTLRUiHandler(handler);
+    }
+
+    /**
+     * add hook when ui ready to reset
+     */
+    public void hook(TLRUIHandlerHook hook) {
+        mCalculator.hook(hook);
+    }
+
+    /**
+     * remove hook, must call if you set hook
+     */
+    public void releaseHook(TLRUIHandlerHook hook) {
+        mCalculator.releaseHook(hook);
+    }
+
+    /**
+     * return load is enable or not
+     */
+    public boolean isEnableLoad() {
+        return isEnableLoad;
+    }
+
+    /**
+     * set load is enable or not
+     */
+    public void setEnableLoad(boolean enableLoad) {
+        isEnableLoad = enableLoad;
+    }
+
+    /**
+     * return refresh is enable or not
+     */
+    public boolean isEnableRefresh() {
+        return isEnableRefresh;
+    }
+
+    /**
+     * set refresh is enable or not
+     */
+    public void setEnableRefresh(boolean enableRefresh) {
+        isEnableRefresh = enableRefresh;
+    }
+
+    /**
+     * return contentLayout can not move on refresh or load
+     */
+    public int keepContentLayoutFlag() {
+        return keepContentLayoutFlag;
+    }
+
+    /**
+     * get {@link TLRLinearLayout} can move head view
+     */
+    public boolean isCanMoveHeadByTLR() {
+        return canMoveHeadByTLR;
+    }
+
+    /**
+     * get {@link TLRLinearLayout} can move foot view
+     */
+    public boolean isCanMoveFootByTLR() {
+        return canMoveFootByTLR;
+    }
+
+    /**
+     * get head view
+     */
+    public View getHeaderView() {
+        return mHeaderView;
+    }
+
+    /**
+     * set head view
+     */
+    public void setHeaderView(View headerView) {
+        setHeaderView(false, headerView);
+    }
+
+    private void setHeaderView(boolean isAdded, View headerView) {
+        if (headerView == null || mHeaderView == headerView) {
+            return;
+        }
+        if (isAdded) {
+            mHeaderView = headerView;
+        } else {
+            mHeaderView = headerView;
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.label = LABEL_HEAD;
+            addView(mHeaderView, params);
+        }
+        Log.d(TAG,"setHeaderView:" + mHeaderView.getClass().getSimpleName());
+        if (mHeaderView instanceof TLRUIHandler) {
+            addTLRUiHandler((TLRUIHandler) mHeaderView);
+        }
+    }
+
+    /**
+     * set foot view
+     */
+    public void setFooterView(View footerView) {
+        setFooterView(false, footerView);
+    }
+
+    private void setFooterView(boolean isAdded, View footerView) {
+        if (footerView == null || mFooterView == footerView) {
+            return;
+        }
+        if (isAdded) {
+            mFooterView = footerView;
+        } else {
+            mFooterView = footerView;
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.label = LABEL_FOOT;
+            addView(mFooterView, params);
+        }
+        Log.d(TAG,"setFooterView:" + mFooterView.getClass().getSimpleName());
+        if (mFooterView instanceof TLRUIHandler) {
+            addTLRUiHandler((TLRUIHandler) mFooterView);
+        }
+    }
+
+    /**
+     * get foot view
+     */
+    public View getFooterView() {
+        return mFooterView;
+    }
+
+    /**
+     * get the refresh factor
+     */
+    public float getRefreshThreshold() {
+        return mCalculator.getRefreshThreshold();
+    }
+
+    /**
+     * Set the refresh factor
+     */
+    public void setRefreshThreshold(float refreshThreshold) {
+        mCalculator.setRefreshThreshold(refreshThreshold);
+    }
+
+    /**
+     * get the load factor
+     */
+    public float getLoadThreshold() {
+        return mCalculator.getLoadThreshold();
+    }
+
+    /**
+     * Set the load factor
+     */
+    public void setLoadThreshold(float loadThreshold) {
+        mCalculator.setLoadThreshold(loadThreshold);
+    }
+
+    /**
+     * get the maximum travel distance to refresh
+     */
+    public int getRefreshMaxMoveDistance() {
+        return mCalculator.getRefreshMaxMoveDistance();
+    }
+
+    /**
+     * Set the maximum travel distance to refresh
+     */
+    public void setRefreshMaxMoveDistance(int refreshMaxMoveDistance) {
+        mCalculator.setRefreshMaxMoveDistance(refreshMaxMoveDistance);
+    }
+
+    /**
+     * get the maximum travel distance to load
+     */
+    public int getLoadMaxMoveDistance() {
+        return mCalculator.getLoadMaxMoveDistance();
+    }
+
+    /**
+     * Set the maximum travel distance to load
+     */
+    public void setLoadMaxMoveDistance(int loadMaxMoveDistance) {
+        mCalculator.setLoadMaxMoveDistance(loadMaxMoveDistance);
+    }
+
+    /**
+     * get the damping coefficient
+     */
+    public float getResistance() {
+        return mCalculator.getResistance();
+    }
+
+    /**
+     * set the damping coefficient
+     */
+    public void setResistance(float resistance) {
+        mCalculator.setResistance(resistance);
+    }
+
+    /**
+     * Set the reset the animation duration
+     */
+    public void setCloseAnimDuration(int closeAnimDuration) {
+        mCalculator.setCloseAnimDuration(closeAnimDuration);
+    }
+
+    /**
+     * Set the auto refresh to open the animation duration
+     */
+    public void setOpenAnimDuration(int openAnimDuration) {
+        mCalculator.setOpenAnimDuration(openAnimDuration);
+    }
+
+    /**
+     * return keep head view when refreshing
+     */
+    public boolean isKeepHeadRefreshing() {
+        return mCalculator.isKeepHeadRefreshing();
+    }
+
+    /**
+     * When refresh, whether or not to stay head view
+     */
+    public void setKeepHeadRefreshing(boolean keepHeadRefreshing) {
+        mCalculator.setKeepHeadRefreshing(keepHeadRefreshing);
+    }
+
+    /**
+     * return keep foot view when loading
+     */
+    public boolean isKeepFootLoading() {
+        return mCalculator.isKeepFootLoading();
+    }
+
+    /**
+     * When loaded, whether to stay foot view
+     */
+    public void setKeepFootLoading(boolean keepFootLoading) {
+        mCalculator.setKeepFootLoading(keepFootLoading);
+    }
+
+    /**
+     * Whether to release the refresh
+     */
+    public boolean isReleaseRefresh() {
+        return mCalculator.isReleaseRefresh();
+    }
+
+    /**
+     * set whether to release the refresh
+     */
+    public void setReleaseRefresh(boolean releaseRefresh) {
+        mCalculator.setReleaseRefresh(releaseRefresh);
+    }
+
+    /**
+     * Whether to release the load
+     */
+    public boolean isReleaseLoad() {
+        return mCalculator.isReleaseLoad();
+    }
+
+    /**
+     * set whether to release the load
+     */
+    public void setReleaseLoad(boolean releaseLoad) {
+        mCalculator.setReleaseLoad(releaseLoad);
+    }
+
+    /**
+     * return has any animation is running
+     */
+    public boolean hasAnyAnimatorRunning() {
+        return mCalculator.hasAnyAnimatorRunning();
+    }
+
+    /**
+     * Returns whether it is refreshing
+     */
+    public boolean isRefreshing() {
+        return mCalculator.isRefreshing();
+    }
+
+    /**
+     * Returns whether it is loading
+     */
+    public boolean isLoading() {
+        return mCalculator.isLoading();
+    }
+
+    public static class LayoutParams extends ViewGroup.MarginLayoutParams {
+
+        int label = 0;
+
+        public LayoutParams(Context c) {
+            this(c, null);
+        }
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+            TypedArray array = c.obtainStyledAttributes(attrs, R.styleable.TLRLinearLayout_Layout);
+
+            try {
+                final int N = array.getIndexCount();
+                for (int i = 0; i < N; i++) {
+                    int index = array.getIndex(i);
+                    if (index == R.styleable.TLRLinearLayout_Layout_label) {
+                        label = array.getInt(R.styleable.TLRLinearLayout_Layout_label, 0);
+                    }
+                }
+            } finally {
+                array.recycle();
+            }
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+        }
+
+        public int getLabel() {
+            return label;
+        }
+    }
+
+    private static class TLRUiHandlerWrapper implements TLRUIHandler {
+        private final List<TLRUIHandler> mTLRUiHandlers = new ArrayList<>();
+
+        public void addTLRUiHandler(TLRUIHandler handler) {
+            if (handler != null) {
+                mTLRUiHandlers.add(handler);
+            }
+        }
+
+        public void removeTLRUiHandler(TLRUIHandler handler) {
+            if (handler != null) {
+                for (TLRUIHandler uiHandler : mTLRUiHandlers) {
+                    if (uiHandler.equals(handler)) {
+                        mTLRUiHandlers.remove(uiHandler);
+                        break;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onRefreshStatusChanged(View target, RefreshStatus status) {
+            if (DEBUG) {
+                String name = target == null ? null : target.getClass().getSimpleName();
+                Log.d(TAG,"onRefreshStatusChanged target:" + name + " status:" + status + " size:"
+                        + mTLRUiHandlers.size());
+            }
+            for (TLRUIHandler handler : mTLRUiHandlers) {
+                handler.onRefreshStatusChanged(target, status);
+            }
+        }
+
+        @Override
+        public void onLoadStatusChanged(View target, LoadStatus status) {
+            if (DEBUG) {
+                String name = target == null ? null : target.getClass().getSimpleName();
+                Log.d(TAG, "onLoadStatusChanged target:" + name + " status:" + status + " size:"
+                        + mTLRUiHandlers.size());
+            }
+            for (TLRUIHandler handler : mTLRUiHandlers) {
+                handler.onLoadStatusChanged(target, status);
+            }
+        }
+
+        @Override
+        public void onOffsetChanged(View target, boolean isRefresh, int totalOffsetY,
+                                    int totalThresholdY, int offsetY, float threshOffset) {
+            if (DEBUG) {
+                String name = target == null ? null : target.getClass().getSimpleName();
+                Log.v(TAG,"onOffsetChanged target:" + name + " isRefresh:" + isRefresh
+                        + " totalOffsetY:" + totalOffsetY + " totalThresholdY:" + totalThresholdY
+                        + " offsetY:" + offsetY + " threshOffset:" + threshOffset);
+            }
+            for (TLRUIHandler handler : mTLRUiHandlers) {
+                handler.onOffsetChanged(target, isRefresh, totalOffsetY, totalThresholdY, offsetY,
+                        threshOffset);
+            }
+        }
+
+        @Override
+        public void onFinish(View target, boolean isRefresh, boolean isSuccess, int errorCode) {
+            if (DEBUG) {
+                String name = target == null ? null : target.getClass().getSimpleName();
+                Log.d(TAG, "onFinish target:" + name + " isRefresh:" + isRefresh + " isSuccess:"
+                        + isSuccess + " errorCode:" + errorCode);
+            }
+            for (TLRUIHandler handler : mTLRUiHandlers) {
+                handler.onFinish(target, isRefresh, isSuccess, errorCode);
+            }
+        }
+    }
+}
+

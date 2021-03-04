@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:uiloader="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.tson.easydemo.model.PAViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.tson.view.list.pull.TLRLinearLayout
+            android:id="@+id/rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            uiloader:enableLoad="true"
+            uiloader:enableRefresh="true"
+            uiloader:keepContentLayout="refresh"
+            uiloader:keepFootLoading="true"
+            uiloader:keepHeadRefreshing="true"
+            uiloader:refreshMaxMoveDistance="@dimen/tlr_def_head_height">
+
+            <!--            -->
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pl"
+                android:layout_width="match_parent"
+                uiloader:label="content"
+                android:layout_height="wrap_content" />
+
+        </com.tson.view.list.pull.TLRLinearLayout>
+
+    </LinearLayout>
+</layout>
