@@ -1,3 +1,4 @@
+include ':download'
 include ':utils'
 include ':log'
 include ':http'
