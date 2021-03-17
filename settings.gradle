@@ -1,3 +1,4 @@
+include ':toast'
 include ':download'
 include ':utils'
 include ':log'

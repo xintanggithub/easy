@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/easy" />
             <option value="$PROJECT_DIR$/http" />
             <option value="$PROJECT_DIR$/log" />
+            <option value="$PROJECT_DIR$/toast" />
             <option value="$PROJECT_DIR$/utils" />
             <option value="$PROJECT_DIR$/view" />
           </set>
