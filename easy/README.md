@@ -87,7 +87,7 @@ class MainActivity(override val layoutId: Int = R.layout.activity_main) :
 
 #### 1.2 自定义公共loadingView和errorView
 
-一下内容在上面的基础版之上添加即可
+以下内容在上面的基础版之上添加即可
 
 - 新增公共布局viewModel(LoadingViewModel)和xml(loading_layout.xml)
 
