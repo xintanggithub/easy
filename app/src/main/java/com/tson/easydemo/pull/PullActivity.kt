@@ -26,6 +26,7 @@ class PullActivity(override val layoutId: Int = R.layout.pa) :
             layoutManager = LinearLayoutManager(this.context)
             adapter = adaptered
         }
+        rl.isKeepFootLoading
         rl.addTLRUiHandler(object :TLRUIHandler{
             override fun onFinish(target: View?, isRefresh: Boolean, isSuccess: Boolean, errorCode: Int) {
             }

@@ -3,6 +3,7 @@ package com.tson.view.list.pull;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -18,6 +19,14 @@ public class TLRDefHeadView extends LinearLayout implements TLRUIHandler {
     private TextView mTextView;
     private ValueAnimator mReleaseAnimator;
     private AnimationDrawable mAnimationDrawable;
+    private String before, loading, push, end;
+
+    public void setText(String before, String push, String loading, String end) {
+        this.before = before;
+        this.loading = loading;
+        this.push = push;
+        this.end = end;
+    }
 
     public TLRDefHeadView(Context context) {
         this(context, null);
@@ -54,11 +63,19 @@ public class TLRDefHeadView extends LinearLayout implements TLRUIHandler {
         switch (status) {
             case PULL_DOWN:
                 if (isMoveDown) {
-                    mTextView.setText(R.string.tlr_def_head_pull_down);
+                    if (null != before && !TextUtils.isEmpty(before)) {
+                        mTextView.setText(before);
+                    } else {
+                        mTextView.setText(R.string.tlr_def_head_pull_down);
+                    }
                 }
                 break;
             case RELEASE_REFRESH:
-                mTextView.setText(R.string.tlr_def_head_release_refresh);
+                if (null != push && !TextUtils.isEmpty(push)) {
+                    mTextView.setText(push);
+                } else {
+                    mTextView.setText(R.string.tlr_def_head_release_refresh);
+                }
                 mReleaseAnimator.start();
                 break;
             case REFRESHING:
@@ -68,7 +85,11 @@ public class TLRDefHeadView extends LinearLayout implements TLRUIHandler {
                 mImageView.setImageResource(R.drawable.tlr_def_refresh_loading);
                 mAnimationDrawable = (AnimationDrawable) mImageView.getDrawable();
                 mAnimationDrawable.start();
-                mTextView.setText(R.string.tlr_def_head_refreshing);
+                if (null != loading && !TextUtils.isEmpty(loading)) {
+                    mTextView.setText(loading);
+                } else {
+                    mTextView.setText(R.string.tlr_def_head_refreshing);
+                }
                 break;
             case IDLE:
                 break;
@@ -96,7 +117,11 @@ public class TLRDefHeadView extends LinearLayout implements TLRUIHandler {
 
     @Override
     public void onFinish(View target, boolean isRefresh, boolean isSuccess, int errorCode) {
-        mTextView.setText(R.string.tlr_def_head_refresh_complete);
+        if (null != end && !TextUtils.isEmpty(end)) {
+            mTextView.setText(end);
+        } else {
+            mTextView.setText(R.string.tlr_def_head_refresh_complete);
+        }
         if (isRefresh) {
             try {
                 mAnimationDrawable.stop();
