@@ -1,6 +1,8 @@
 package com.tson.log
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.os.AsyncTask
 import android.util.Log
 
 /**
@@ -14,26 +16,32 @@ class LogUtils {
          * 日志输出级别NONE
          */
         private const val LEVEL_NONE = 0
+
         /**
          * 日志输出级别E
          */
         private const val LEVEL_ERROR = 1
+
         /**
          * 日志输出级别W
          */
         private const val LEVEL_WARN = 2
+
         /**
          * 日志输出级别I
          */
         private const val LEVEL_INFO = 3
+
         /**
          * 日志输出级别D
          */
         private const val LEVEL_DEBUG = 4
+
         /**
          * 日志输出级别V
          */
         private const val LEVEL_VERBOSE = 5
+
         /**
          * 是否允许输出log
          */
@@ -43,8 +51,29 @@ class LogUtils {
 
         private var buildType = ""
 
+        private var isSaveLog = false
+
+        private lateinit var context: Context
+
         @SuppressLint("UseSparseArrays")
         private val listenerMap = HashMap<Int, LogListener>()
+
+        fun getCtx(): Context {
+            if (this::context.isInitialized) {
+                return context
+            }
+            throw Exception("context is not  initialized")
+        }
+
+        fun logcatStatus() = isSaveLog
+
+        fun openLogcat() {
+            isSaveLog = true
+        }
+
+        fun closeLogcat() {
+            isSaveLog = false
+        }
 
         fun addListener(logListener: LogListener): Int {
             val hasCode = logListener.hashCode()
@@ -62,6 +91,22 @@ class LogUtils {
             for (mutableEntry in listenerMap) {
                 mutableEntry.value.log(lv, tag, content)
             }
+            if (isSaveLog) {
+                LogAsync(
+                    LogFileUtils.stampToDate(
+                        System.currentTimeMillis(),
+                        "yyyy-MM-dd HH:mm:ss SSS"
+                    ) + "  " + lv + "  " + tag + "  :" + content + "  <br/>"
+                ).execute()
+            }
+        }
+
+        internal class LogAsync(private val content: String) : AsyncTask<String, String, String>() {
+
+            override fun doInBackground(vararg strings: String): String? {
+                LogFileUtils.writeTxtToFile(content)
+                return null
+            }
         }
 
         /**
@@ -69,8 +114,9 @@ class LogUtils {
          *
          * @param isEnable 是否允许log
          */
-        fun setDebuggable(isEnable: Boolean) {
+        fun setDebuggable(isEnable: Boolean, progress: Context) {
             mDebuggable = if (isEnable) LEVEL_VERBOSE else LEVEL_NONE
+            this.context = progress
         }
 
         fun setVersionName(buildType: String) {
