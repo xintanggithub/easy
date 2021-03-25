@@ -1,5 +1,29 @@
 这是一个基础架构，基于dataBinding，使用前还需要做简单封装，如果不需要使用全局loadingView和errorView的，只需要新建抽象类BaseActivity继承并空实现方法即可
 
+### 0. 如何引入
+
+#### 0.1 根目录下的build.gradle添加如下代码
+
+```
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        //添加下面这个maven配置
+        maven{
+            //这是maven仓库地址
+            url 'https://raw.githubusercontent.com/xintanggithub/maven/master'
+        }
+    }
+}
+```
+
+#### 0.2 需要使用的module下build.gradle添加引用
+
+```
+    implementation "com.easy.assembly.base:lib:1.0.4"
+```
+
 ### 1. Activity
 
 ####  1.1 基础版
