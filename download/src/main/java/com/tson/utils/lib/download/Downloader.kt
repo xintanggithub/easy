@@ -2,10 +2,10 @@ package com.tson.utils.lib.download
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelStore
 import android.content.Intent
 import android.os.Build
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import com.liulishuo.filedownloader.services.DownloadMgrInitialParams

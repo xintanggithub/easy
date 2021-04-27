@@ -1,8 +1,8 @@
 package com.tson.utils.lib.download
 
 import android.app.Application
-import android.arch.lifecycle.ViewModel
 import android.text.TextUtils
+import androidx.lifecycle.ViewModel
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
