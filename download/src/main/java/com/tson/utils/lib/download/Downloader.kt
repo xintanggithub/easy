@@ -47,11 +47,12 @@ class Downloader {
         channelId: String,
         description: String,
         notificationId: Int
-    ) {
+    ): Downloader  {
         mViewModel.channelName = channelName
         mViewModel.channelId = channelId
         mViewModel.description = description
         mViewModel.notificationId = notificationId
+        return this
     }
 
     fun connectService(connectService: ConnectServiceCallback) {
