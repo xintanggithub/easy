@@ -26,14 +26,12 @@ android {
     uploadArchives {
         repositories {
             mavenDeployer {
-                repository(url: 'file:///Users/tangxin/work/maven') {
-                    authentication(userName: 'tsontang', password: 'mmm123')
-                }
+                repository(url: 'file:///Users/tangxin/work/maven')
 
                 pom.project {
                     groupId 'com.easy.assembly.download'
                     artifactId 'lib'
-                    version '1.0.0'
+                    version '1.0.1'
                     packaging 'aar'
                 }
             }

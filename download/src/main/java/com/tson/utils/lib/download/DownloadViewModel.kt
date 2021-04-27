@@ -19,6 +19,11 @@ import com.tson.utils.lib.download.utils.sp.SpHelper
  */
 class DownloadViewModel : ViewModel() {
 
+    var channelName = "download service"
+    var channelId = "download_notification_id"
+    var description = "download service"
+    var notificationId = 1001
+    
     private var application: Application? = null
     private var connectService: ConnectServiceCallback? = null
 

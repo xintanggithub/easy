@@ -42,6 +42,18 @@ class Downloader {
         return this
     }
 
+    fun notification(
+        channelName: String,
+        channelId: String,
+        description: String,
+        notificationId: Int
+    ) {
+        mViewModel.channelName = channelName
+        mViewModel.channelId = channelId
+        mViewModel.description = description
+        mViewModel.notificationId = notificationId
+    }
+
     fun connectService(connectService: ConnectServiceCallback) {
         FileDownloader.setupOnApplicationOnCreate(application)
         val service = Intent(application, DownloadService::class.java)
