@@ -9,7 +9,7 @@ import android.app.Activity
  */
 class ActivityUtils {
     companion object {
-        private const val TAG = "SpHelper"
+        private const val TAG = "ActivityUtils"
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { ActivityUtils() }
     }
 
