@@ -24,7 +24,7 @@ allprojects {
 #### 0.2 需要使用的module下build.gradle添加引用
 
 ```
-    implementation "com.tson.utils.lib.download:lib:1.0.8"
+    implementation "com.easy.assembly.download:lib:1.0.2"
 ```
 
 ### 1. 使用
