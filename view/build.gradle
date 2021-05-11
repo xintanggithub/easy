@@ -48,7 +48,7 @@ uploadArchives {
         repository(url: 'file:///Users/tangxin/work/maven')
         pom.groupId = 'com.easy.assembly.view'
         pom.artifactId = 'lib'
-        pom.version = '1.0.3'
+        pom.version = '1.0.4'
     }
 
 }
@@ -69,4 +69,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     api 'jp.wasabeef:glide-transformations:4.0.1'
     api "com.github.bumptech.glide:okhttp3-integration:4.8.0"
+    api 'androidx.cardview:cardview:1.0.0'
+
 }
