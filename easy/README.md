@@ -117,6 +117,15 @@ class MainActivity(override val layoutId: Int = R.layout.activity_main) :
 
 
 或者不使用LoadingViewModel的这种方式，因为loadingView和errorView的处理逻辑都在你的BaseActivity中实现的，所以怎么实现，怎么处理都是自定义的。
+
+
+最快的方法：把viewModel当成普通对象使用，对如下代码进行修改：
+        // 获取ViewModel
+        loadingViewModel = getViewModel(LoadingViewModel::class.java)
+
+        改为
+        loadingViewModel = LoadingViewModel()
+
 ```
 
 以下内容在上面的基础版之上添加即可
