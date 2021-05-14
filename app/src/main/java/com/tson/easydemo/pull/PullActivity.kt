@@ -21,6 +21,9 @@ class PullActivity(override val layoutId: Int = R.layout.pa) :
     }
 
     override fun initView() {
+        showLoading.setOnClickListener {
+            viewModel.loadStatus.error(Exception("嗯？？？"))
+        }
         val adaptered =MultiOpenAdapter(mutableListOf("123","123","123","123","123","123","123","123","123","123","123","123","123"))
         pl.run {
             layoutManager = LinearLayoutManager(this.context)

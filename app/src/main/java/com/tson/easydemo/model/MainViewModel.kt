@@ -31,7 +31,8 @@ class MainViewModel : BaseViewModel() {
         Request.call({ api.login(LoginRequest()) }, {
             loadStatus.showLoading()
         }, {
-            loadStatus.hideLoading()
+            loadStatus.error(Throwable("哈哈哈哈"))
+//            loadStatus.hideLoading()
         }, {
             loadStatus.error(it)
         })

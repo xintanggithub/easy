@@ -47,7 +47,7 @@ abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
         // dataBinding绑定view
         loadingBinding = DataBindingUtil.bind(loadingView)!!
         // 获取ViewModel
-        loadingViewModel = getViewModel(LoadingViewModel::class.java)
+        loadingViewModel = LoadingViewModel()
         // 绑定ViewModel
         loadingBinding.loading = loadingViewModel
         // 关联页面业务ViewModel和公共loadingView和errorView的核心代码，由接口实现
