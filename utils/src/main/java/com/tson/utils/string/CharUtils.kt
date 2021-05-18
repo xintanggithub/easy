@@ -1,4 +1,4 @@
-package com.tson.utils.char
+package com.tson.utils.string
 
 import android.text.TextUtils
 import java.security.MessageDigest
