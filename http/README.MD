@@ -26,3 +26,33 @@ if (!this::api.isInitialized) {
             loadStatus.error(it)
         })
 ```
+
+- 线程切换
+
+```
+ // 切换到主线程
+ this.ktxRunOnUi {
+    // todo
+ }
+
+ // 延迟delayMillis后切换到主线程
+ this.ktxRunOnUiDelay {
+    // todo
+ }
+
+ // 子线程执行。SingleThreadPool
+ this.ktxRunOnBgSingle {
+    // todo
+ }
+
+ // 子线程执行。FixedThreadPool
+ this.ktxRunOnBgFix {
+    // todo
+ }
+
+ // 子线程执行。CachedThreadPool
+ this.ktxRunOnBgCache {
+    // todo
+ }
+
+```
