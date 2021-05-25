@@ -39,7 +39,7 @@ uploadArchives {
         repository(url: 'file:///Users/tangxin/work/maven')
         pom.groupId = 'com.easy.assembly.log'
         pom.artifactId = 'lib'
-        pom.version = '1.0.0'
+        pom.version = '1.0.1'
     }
 
 }

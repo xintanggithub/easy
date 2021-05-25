@@ -109,6 +109,10 @@ class LogUtils {
             }
         }
 
+        fun setDebuggable(isEnable: Boolean) {
+            mDebuggable = if (isEnable) LEVEL_VERBOSE else LEVEL_NONE
+        }
+
         /**
          * 设置调试Log开关
          *
