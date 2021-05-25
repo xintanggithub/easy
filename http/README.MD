@@ -13,7 +13,9 @@ if (!this::api.isInitialized) {
 }
 ```
 
-- request
+- 请求
+
+这里使用的携程，请求方式可自定义，比如用传统的rxJava等，已默认依赖rxJava2
 
 ```
  Request.call({ 
