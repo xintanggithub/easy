@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EasyBase"
         android:usesCleartextTraffic="true">
-        <activity android:name=".pull.PullActivity">
-        </activity>
+        <activity android:name=".test.AnimationDetailActivity"></activity>
+        <activity android:name=".test.AnimationActivity" />
+        <activity android:name=".pull.PullActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
