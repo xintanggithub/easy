@@ -9,7 +9,7 @@ android {
     buildToolsVersion "30.0.0"
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion project.minSdkVersion as int
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -35,10 +35,10 @@ android {
 
 uploadArchives {
     repositories.mavenDeployer {
-        repository(url: 'file:///Users/tangxin/work/maven')
+        repository(url: 'file:///F:\\privatemaven\\maven')
         pom.groupId = 'com.easy.assembly.toast'
         pom.artifactId = 'lib'
-        pom.version = '1.0.0'
+        pom.version = '1.0.1'
     }
 
 }

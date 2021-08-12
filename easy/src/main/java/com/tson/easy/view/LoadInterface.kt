@@ -11,10 +11,14 @@ interface LoadInterface {
 
     fun showLoading()
 
+    fun showLoading(message: String)
+
     fun hideLoading()
 
     fun error(error: Throwable)
 
     fun retry()
+
+    fun anyHandle(status: Int, any: Any)
 
 }
