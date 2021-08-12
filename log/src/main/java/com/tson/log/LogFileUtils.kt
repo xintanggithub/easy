@@ -144,7 +144,7 @@ internal class LogFileUtils {
                         //如果存在，判断大小
                         val fileSize = getFileSize(tempFile)
                         //如果文件大于10MB，则需要创建新的文件
-                        if (fileSize >= MB_SIZE * 10) {
+                        if (fileSize >= MB_SIZE * LogUtils.getLogcatFileSize()) {
                             (length + 1).toString() + ".txt"
                         } else {
                             //如果小于10MB，则可以继续向该文件写入内容

@@ -53,6 +53,9 @@ class LogUtils {
 
         private var isSaveLog = false
 
+        private var maxMbSize = 10
+
+        @SuppressLint("StaticFieldLeak")
         private lateinit var context: Context
 
         @SuppressLint("UseSparseArrays")
@@ -67,12 +70,21 @@ class LogUtils {
 
         fun logcatStatus() = isSaveLog
 
-        fun openLogcat() {
-            isSaveLog = true
+        fun setLogcatFileSize(size: Int): Companion {
+            maxMbSize = size
+            return this
         }
 
-        fun closeLogcat() {
+        fun getLogcatFileSize() = maxMbSize
+
+        fun openLogcat(): Companion {
+            isSaveLog = true
+            return this
+        }
+
+        fun closeLogcat(): Companion {
             isSaveLog = false
+            return this
         }
 
         fun addListener(logListener: LogListener): Int {
