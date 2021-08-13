@@ -54,12 +54,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center">
-                <!-- todo 解除注释，则会在下面的LinearLayout进行加载效果、error等，注释掉，则是全屏显示-->
-                <LinearLayout
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/vp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:tag="loadingView" />
+                    android:layout_height="match_parent"/>
+
+<!--                &lt;!&ndash; todo 解除注释，则会在下面的LinearLayout进行加载效果、error等，注释掉，则是全屏显示&ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:gravity="center"-->
+<!--                    android:tag="loadingView" />-->
             </LinearLayout>
         </RelativeLayout>
 
