@@ -16,4 +16,10 @@ abstract class EasyBaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelCla
 
     override fun defaultHideLoadingView() {}
 
+    override fun showLoading(message: String) {
+    }
+
+    override fun anyHandle(status: Int, any: Any) {
+    }
+
 }

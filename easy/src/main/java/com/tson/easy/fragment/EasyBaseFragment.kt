@@ -16,4 +16,8 @@ abstract class EasyBaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelCla
 
     override fun initLoadingViewEnd() {}
 
+    override fun anyHandle(status: Int, any: Any) {}
+
+    override fun showLoading(message: String) {}
+
 }

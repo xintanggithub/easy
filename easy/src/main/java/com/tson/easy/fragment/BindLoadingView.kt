@@ -37,7 +37,7 @@ abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClas
         if (loadingLayoutId == -1) {
             return
         }
-        val contentView = view?.rootView
+        val contentView = mBinding.root
         if (contentView is ViewGroup) {
             if (contentView.childCount <= 0) {
                 return
