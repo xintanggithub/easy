@@ -6,4 +6,6 @@ include ':http'
 include ':view'
 include ':easy'
 include ':app'
+include ':componentlib'
+
 rootProject.name = "easyBase"

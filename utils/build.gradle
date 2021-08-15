@@ -38,7 +38,7 @@ uploadArchives {
         repository(url: 'file:///F:\\privatemaven\\maven')
         pom.groupId = 'com.easy.assembly.utils'
         pom.artifactId = 'lib'
-        pom.version = '1.0.4'
+        pom.version = '1.0.6'
     }
 
 }

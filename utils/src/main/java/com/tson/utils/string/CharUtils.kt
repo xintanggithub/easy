@@ -3,6 +3,7 @@ package com.tson.utils.string
 import android.text.TextUtils
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.util.regex.Pattern
 import kotlin.experimental.and
 
 /**
@@ -62,4 +63,24 @@ object CharUtils {
         return true
     }
 
+    fun isEmail(email: String?): Boolean {
+        return email?.run {
+            val regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$"
+            return  Pattern.compile(regEx1).matcher(email).matches()
+        } ?: false
+    }
+
+//    public static boolean isEmail(String email){
+//        if (null==email || "".equals(email)){
+//            return false;
+//        }
+//        String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+//        Pattern p = Pattern.compile(regEx1);
+//        Matcher m = p.matcher(email);
+//        if(m.matches()){
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    }
 }
