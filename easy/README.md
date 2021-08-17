@@ -21,7 +21,7 @@ allprojects {
 #### 0.2 需要使用的module下build.gradle添加引用
 
 ```
-    implementation "com.easy.assembly.base:lib:1.0.4"
+    implementation "com.easy.assembly.base:lib:1.0.11"
 ```
 
 ### 1. Activity
