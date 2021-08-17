@@ -12,6 +12,8 @@ abstract class InitModel : ViewModel() {
 
     lateinit var loadStatus: LoadInterface
 
+    var multiLoadStatus = mutableMapOf<String, LoadInterface>()
+
     abstract fun initModel()
 
 }
