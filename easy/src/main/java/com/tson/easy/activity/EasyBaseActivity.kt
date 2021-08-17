@@ -22,4 +22,10 @@ abstract class EasyBaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelCla
     override fun anyHandle(status: Int, any: Any) {
     }
 
+    override fun success() {
+    }
+
+    override fun success(any: Any) {
+    }
+
 }

@@ -21,4 +21,8 @@ interface LoadInterface {
 
     fun anyHandle(status: Int, any: Any)
 
+    fun success()
+
+    fun success(any: Any)
+
 }
