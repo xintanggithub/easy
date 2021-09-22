@@ -8,3 +8,4 @@ include ':easy'
 include ':app'
 
 rootProject.name = "easyBase"
+include ':aop'
