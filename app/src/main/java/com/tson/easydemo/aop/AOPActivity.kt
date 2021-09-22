@@ -17,8 +17,12 @@ class AOPActivity : AppCompatActivity() {
         }
     }
 
-    @Stub(tag = "StubAspect", content = "测试代码")
+    //    插桩
+    @Stub(tag = "插桩tag", content = "插桩日志内容")
     fun testMt(name: String) {
         Log.d("StubAspect", " = !23 $name")
     }
+
+
+
 }
