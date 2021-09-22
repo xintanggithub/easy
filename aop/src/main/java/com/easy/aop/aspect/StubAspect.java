@@ -25,7 +25,6 @@ public class StubAspect {
 
     @Around("methodAnnotated() || constructorAnnotated()")
     public Object aroundJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
         //获取方法参数
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         //获取方法地址
@@ -56,6 +55,7 @@ public class StubAspect {
         Log.d(tag, "parameters = " + parameters);
 
         Log.d(tag, "start proceed, method name = " + methodName);
+        long startTime = System.currentTimeMillis();
         joinPoint.proceed();
         Log.d(tag, "proceed done, use time = " + (System.currentTimeMillis() - startTime) + " ms");
         return "";
