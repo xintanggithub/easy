@@ -3,7 +3,9 @@ package com.tson.easydemo.aop
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.easy.aop.AopManager
 import com.easy.aop.annotation.*
+import com.easy.aop.auto.AutoAction
 import com.easy.aop.enumerate.Statistics.MAIN
 import com.easy.aop.utils.ktxRunOnUiDelay
 import com.tson.easydemo.R
@@ -34,6 +36,15 @@ class AOPActivity : AppCompatActivity() {
         auto1.setOnClickListener {
             testAuto()
         }
+        AopManager.instance.setAutoListener(object : AutoAction {
+            override fun proceedBefore(action: String, map: MutableMap<String, String>) {
+                Log.d("统一处理", "在方法执行前  action=$action")
+            }
+
+            override fun proceedAfter(action: String, map: MutableMap<String, String>) {
+                Log.d("统一处理", "在方法执行后  action=$action")
+            }
+        })
     }
 
     @Auto(action = "action1", parameter = [AutoParameter(key = "1", value = "2")])

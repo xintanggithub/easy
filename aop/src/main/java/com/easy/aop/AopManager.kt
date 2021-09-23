@@ -1,5 +1,7 @@
 package com.easy.aop
 
+import com.easy.aop.auto.AutoAction
+import com.easy.aop.helper.AutoHelper
 import com.easy.aop.utils.log.AopLogHelper
 import com.easy.aop.utils.log.ListenerLog
 
@@ -8,15 +10,36 @@ class AopManager {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { AopManager() }
     }
 
-    fun addListenerLog(listenerLog: ListenerLog) {
+    fun beforeCallback(action: String, map: MutableMap<String, String>) {
+        AutoHelper.instance.beforeCallback(action, map)
+    }
+
+    fun afterCallback(action: String, map: MutableMap<String, String>) {
+        AutoHelper.instance.afterCallback(action, map)
+    }
+
+    fun setAutoListener(autoAction: AutoAction) {
+//        AutoHelper.instance.addAutoListener(autoAction)
+        AutoHelper.instance.setAutoListener(autoAction)
+    }
+
+    fun addLogListener(listenerLog: ListenerLog) {
         AopLogHelper.instance.addListenerLog(listenerLog)
     }
 
-    fun removeListenerLog(hashCode: Int) {
+//    fun removeAutoListener(hashCode: Int) {
+//        AutoHelper.instance.removeAutoListener(hashCode)
+//    }
+
+    fun removeLogListener(hashCode: Int) {
         AopLogHelper.instance.removeListenerLog(hashCode)
     }
 
-    fun removeListenerLog(listenerLog: ListenerLog) {
+//    fun removeAutoListener(action: AutoAction) {
+//        AutoHelper.instance.removeAutoListener(action)
+//    }
+
+    fun removeLogListener(listenerLog: ListenerLog) {
         AopLogHelper.instance.removeListenerLog(listenerLog)
     }
 
