@@ -1,8 +1,7 @@
 package com.easy.aop.aspect;
 
-import android.util.Log;
-
 import com.easy.aop.annotation.Stub;
+import com.easy.aop.utils.log.log;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -51,13 +50,13 @@ public class StubAspect {
         }
         String parameters = params.toString() + "}";
 
-        Log.d(tag, content);
-        Log.d(tag, "parameters = " + parameters);
+        log.log(tag, content);
+        log.log(tag, "parameters = " + parameters);
 
-        Log.d(tag, "start proceed, method name = " + methodName);
+        log.log(tag, "start proceed, method name = " + methodName);
         long startTime = System.currentTimeMillis();
         joinPoint.proceed();
-        Log.d(tag, "proceed done, use time = " + (System.currentTimeMillis() - startTime) + " ms");
+        log.log(tag, "proceed done, use time = " + (System.currentTimeMillis() - startTime) + " ms");
         return "";
     }
 }

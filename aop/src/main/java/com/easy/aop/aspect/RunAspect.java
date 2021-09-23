@@ -1,10 +1,9 @@
 package com.easy.aop.aspect;
 
-import android.util.Log;
-
 import com.easy.aop.annotation.Run;
 import com.easy.aop.callback.DoBlock;
 import com.easy.aop.helper.ThreadHelper;
+import com.easy.aop.utils.log.log;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -48,7 +47,7 @@ public class RunAspect {
             }
         }
         String parameters = params.toString() + " }";
-        Log.d(methodName, "parameters = " + parameters);
+        log.log(methodName, "parameters = " + parameters);
         final ProceedingJoinPoint joinPoint2 = joinPoint;
         ThreadHelper.INSTANCE.runWithType(type, new DoBlock() {
             @Override
@@ -56,7 +55,7 @@ public class RunAspect {
                 try {
                     long startTime = System.currentTimeMillis();
                     joinPoint2.proceed();
-                    Log.d(methodName, "proceed done, use time = " + (System.currentTimeMillis() - startTime) + " ms");
+                    log.log(methodName, "proceed done, use time = " + (System.currentTimeMillis() - startTime) + " ms");
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }

@@ -1,9 +1,8 @@
 package com.easy.aop.aspect;
 
-import android.util.Log;
-
 import com.easy.aop.callback.DoBlock;
 import com.easy.aop.helper.ThreadHelper;
+import com.easy.aop.utils.log.log;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -25,7 +24,7 @@ public class LockAspect {
                 try {
                     long start = System.currentTimeMillis();
                     joinPoint.proceed();
-                    Log.d("LockAspect", "proceed done, use time = " + (System.currentTimeMillis() - start) + " ms");
+                    log.log("LockAspect", "proceed done, use time = " + (System.currentTimeMillis() - start) + " ms");
                 } catch (Throwable throwable) {
                     throwable.printStackTrace();
                 }
