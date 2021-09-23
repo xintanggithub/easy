@@ -3,10 +3,7 @@ package com.tson.easydemo.aop
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.easy.aop.annotation.Lock
-import com.easy.aop.annotation.Run
-import com.easy.aop.annotation.Stub
-import com.easy.aop.enumerate.Statistics.IO
+import com.easy.aop.annotation.*
 import com.easy.aop.enumerate.Statistics.MAIN
 import com.easy.aop.utils.ktxRunOnUiDelay
 import com.tson.easydemo.R
@@ -34,6 +31,14 @@ class AOPActivity : AppCompatActivity() {
                 lockUtils("3")
             }
         }
+        auto1.setOnClickListener {
+            testAuto()
+        }
+    }
+
+    @Auto(action = "action1", parameter = [AutoParameter(key = "1", value = "2")])
+    fun testAuto() {
+        Log.d("auto", "auto doing")
     }
 
     @Lock

@@ -31,7 +31,7 @@ android {
                 repository(url: 'file:///F:\\privatemaven\\maven')
 
                 pom.project {
-                    groupId 'com.easy.aop'
+                    groupId 'com.easy.assembly.aop'
                     artifactId 'lib'
                     version '1.0.0'
                     packaging 'aar'
