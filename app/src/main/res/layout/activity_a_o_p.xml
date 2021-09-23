@@ -17,4 +17,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="线程切换" />
+
+    <Button
+        android:id="@+id/lock1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="加锁" />
 </LinearLayout>

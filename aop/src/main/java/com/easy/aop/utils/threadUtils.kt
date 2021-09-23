@@ -7,6 +7,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.locks.ReentrantLock
 
 
 private val handler = Handler(Looper.getMainLooper())
@@ -22,6 +23,16 @@ private val single: ExecutorService = Executors.newSingleThreadExecutor()
 fun <T> T.ktxRunOnUi(block: T.() -> Unit) {
     handler.post {
         block()
+    }
+}
+
+private val lock = ReentrantLock()
+fun withLock(block: () -> Unit) {
+    try {
+        lock.lock()
+        block()
+    } finally {
+        lock.unlock()
     }
 }
 

@@ -17,4 +17,8 @@ object ThreadHelper {
         }
     }
 
+    fun runWithLock(doBlock: DoBlock) {
+        withLock { doBlock.doBlock() }
+    }
+
 }

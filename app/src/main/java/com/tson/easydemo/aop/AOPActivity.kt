@@ -3,10 +3,12 @@ package com.tson.easydemo.aop
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.easy.aop.annotation.Lock
 import com.easy.aop.annotation.Run
 import com.easy.aop.annotation.Stub
 import com.easy.aop.enumerate.Statistics.IO
 import com.easy.aop.enumerate.Statistics.MAIN
+import com.easy.aop.utils.ktxRunOnUiDelay
 import com.tson.easydemo.R
 import kotlinx.android.synthetic.main.activity_a_o_p.*
 
@@ -21,6 +23,23 @@ class AOPActivity : AppCompatActivity() {
         run1.setOnClickListener {
             testIO()
         }
+        lock1.setOnClickListener {
+            ktxRunOnUiDelay(1000) {
+                lockUtils("1")
+            }
+            ktxRunOnUiDelay(1000) {
+                lockUtils("2")
+            }
+            ktxRunOnUiDelay(1000) {
+                lockUtils("3")
+            }
+        }
+    }
+
+    @Lock
+    fun lockUtils(value: String) {
+        Thread.sleep(1000)//每个停一会儿
+        Log.d("value = ", value)// 不会一次性的把 1 2 3全部输出，而是间隔1000ms左右逐个输出
     }
 
     @Run(type = MAIN)
