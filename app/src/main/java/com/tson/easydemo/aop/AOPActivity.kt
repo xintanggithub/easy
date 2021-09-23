@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.easy.aop.annotation.Run
 import com.easy.aop.annotation.Stub
 import com.easy.aop.enumerate.Statistics.IO
+import com.easy.aop.enumerate.Statistics.MAIN
 import com.tson.easydemo.R
 import kotlinx.android.synthetic.main.activity_a_o_p.*
 
@@ -22,7 +23,7 @@ class AOPActivity : AppCompatActivity() {
         }
     }
 
-    @Run(type = IO)
+    @Run(type = MAIN)
     fun testIO() {
         try {
             run1.text = "123123"

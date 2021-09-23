@@ -2,6 +2,9 @@ package com.easy.aop.utils
 
 import android.os.Handler
 import android.os.Looper
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -23,9 +26,14 @@ fun <T> T.ktxRunOnUi(block: T.() -> Unit) {
 }
 
 fun <T> T.ktxRunOnIO(block: T.() -> Unit) {
-
+    Observable.create<T> { block() }.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread()).subscribe()
 }
 
+fun <T> T.ktxRunOnMain(block: T.() -> Unit) {
+    Observable.create<T> { block() }.subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread()).subscribe()
+}
 
 /**
  * 延迟delayMillis后切换到主线程
