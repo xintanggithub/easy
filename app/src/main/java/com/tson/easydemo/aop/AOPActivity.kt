@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.easy.aop.AopManager
 import com.easy.aop.annotation.*
 import com.easy.aop.auto.AutoAction
+import com.easy.aop.callback.DoProceed
 import com.easy.aop.enumerate.Statistics.MAIN
 import com.easy.aop.utils.ktxRunOnUiDelay
 import com.tson.easydemo.R
@@ -37,8 +38,9 @@ class AOPActivity : AppCompatActivity() {
             testAuto()
         }
         AopManager.instance.setAutoListener(object : AutoAction {
-            override fun proceedBefore(action: String, map: MutableMap<String, String>) {
+            override fun proceedBefore(action: String, map: MutableMap<String, String>, proceed: DoProceed) {
                 Log.d("统一处理", "在方法执行前  action=$action")
+                proceed.runMethod()
             }
 
             override fun proceedAfter(action: String, map: MutableMap<String, String>) {

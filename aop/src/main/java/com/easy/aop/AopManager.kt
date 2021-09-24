@@ -1,6 +1,7 @@
 package com.easy.aop
 
 import com.easy.aop.auto.AutoAction
+import com.easy.aop.callback.DoProceed
 import com.easy.aop.helper.AutoHelper
 import com.easy.aop.utils.log.AopLogHelper
 import com.easy.aop.utils.log.ListenerLog
@@ -10,8 +11,8 @@ class AopManager {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { AopManager() }
     }
 
-    fun beforeCallback(action: String, map: MutableMap<String, String>) {
-        AutoHelper.instance.beforeCallback(action, map)
+    fun beforeCallback(action: String, map: MutableMap<String, String>, proceed: DoProceed) {
+        AutoHelper.instance.beforeCallback(action, map, proceed)
     }
 
     fun afterCallback(action: String, map: MutableMap<String, String>) {

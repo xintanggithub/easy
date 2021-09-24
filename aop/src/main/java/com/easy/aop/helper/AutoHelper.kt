@@ -1,6 +1,7 @@
 package com.easy.aop.helper
 
 import com.easy.aop.auto.AutoAction
+import com.easy.aop.callback.DoProceed
 
 class AutoHelper {
 
@@ -9,18 +10,19 @@ class AutoHelper {
     }
 
     private var autoMap: AutoAction = object : AutoAction {
-        override fun proceedBefore(action: String, map: MutableMap<String, String>) {
+        override fun proceedBefore(action: String, map: MutableMap<String, String>, proceed: DoProceed) {
+            proceed.runMethod()
         }
 
         override fun proceedAfter(action: String, map: MutableMap<String, String>) {
         }
     }
 
-    fun beforeCallback(action: String, map: MutableMap<String, String>) {
+    fun beforeCallback(action: String, map: MutableMap<String, String>, proceed: DoProceed) {
 //        for (mutableEntry in autoMap) {
 //            mutableEntry.value.proceedBefore(action, map)
 //        }
-        autoMap.proceedBefore(action, map)
+        autoMap.proceedBefore(action, map, proceed)
     }
 
     fun afterCallback(action: String, map: MutableMap<String, String>) {

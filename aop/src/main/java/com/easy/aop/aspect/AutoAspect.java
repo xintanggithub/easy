@@ -3,6 +3,7 @@ package com.easy.aop.aspect;
 import com.easy.aop.AopManager;
 import com.easy.aop.annotation.Auto;
 import com.easy.aop.annotation.AutoParameter;
+import com.easy.aop.callback.DoProceed;
 import com.easy.aop.utils.log.log;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -33,9 +34,9 @@ public class AutoAspect {
         final String methodName = method.getName();
         Method method2 = joinPoint.getThis().getClass().getDeclaredMethod(method.getName(), method.getParameterTypes());
         Auto run = method2.getAnnotation(Auto.class);
-        String action = null != run ? run.action() : "";
+        final String action = null != run ? run.action() : "";
         AutoParameter[] autoParameters = null != run ? run.parameter() : null;
-        Map<String, String> parameter = new HashMap<>();
+        final Map<String, String> parameter = new HashMap<>();
         if (null != autoParameters) {
             for (AutoParameter autoParameter : autoParameters) {
                 parameter.put(autoParameter.key(), autoParameter.value());
@@ -43,11 +44,25 @@ public class AutoAspect {
         }
         log.log(methodName, "action = " + action);
         log.log(methodName, "parameter = " + parameter);
-        AopManager.Companion.getInstance().beforeCallback(action, parameter);
-        long startTime = System.currentTimeMillis();
-        joinPoint.proceed();
-        log.log(methodName, "proceed done, use time = " + (System.currentTimeMillis() - startTime));
-        AopManager.Companion.getInstance().afterCallback(action, parameter);
+        final ProceedingJoinPoint joinPoint2 = joinPoint;
+        AopManager.Companion.getInstance().beforeCallback(action, parameter, new DoProceed() {
+            @Override
+            public void runMethod() {
+                try {
+                    long startTime = System.currentTimeMillis();
+                    joinPoint2.proceed();
+                    log.log(methodName, "proceed done, use time = " + (System.currentTimeMillis() - startTime));
+                    AopManager.Companion.getInstance().afterCallback(action, parameter);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+
+            @Override
+            public void unDo() {
+                log.log(methodName, "proceed stop handle");
+            }
+        });
         return "";
     }
 

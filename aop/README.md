@@ -117,8 +117,9 @@ plugins {
 - 自定义方法执行前后逻辑：
 ```kotlin
         AopManager.instance.setAutoListener(object : AutoAction {
-            override fun proceedBefore(action: String, map: MutableMap<String, String>) {
+            override fun proceedBefore(action: String, map: MutableMap<String, String>, proceed: DoProceed) {
                 Log.d("统一处理", "在方法执行前  action=$action")
+                proceed.runMethod() // 这一句代码是指调用执行加了注解的方法
             }
 
             override fun proceedAfter(action: String, map: MutableMap<String, String>) {
