@@ -9,3 +9,4 @@ include ':app'
 
 rootProject.name = "easyBase"
 include ':aop'
+include ':sp2mmkv'
