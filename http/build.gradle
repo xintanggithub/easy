@@ -50,6 +50,8 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.0'
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.0'
 
     //OkHttp3
     api "com.squareup.okhttp3:okhttp:4.3.0"

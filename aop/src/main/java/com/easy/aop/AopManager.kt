@@ -1,5 +1,6 @@
 package com.easy.aop
 
+import android.app.Application
 import com.easy.aop.auto.AutoAction
 import com.easy.aop.callback.DoProceed
 import com.easy.aop.helper.AutoHelper
@@ -9,6 +10,19 @@ import com.easy.aop.utils.log.ListenerLog
 class AopManager {
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { AopManager() }
+    }
+
+    private lateinit var application: Application
+
+    fun register(application: Application) {
+        this.application = application
+    }
+
+    fun getApplication(): Application {
+        if (!this::application.isInitialized) {
+            Throwable("this::application.isInitialized == false")
+        }
+        return application
     }
 
     fun beforeCallback(action: String, map: MutableMap<String, String>, proceed: DoProceed) {

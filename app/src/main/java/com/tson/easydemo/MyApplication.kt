@@ -1,5 +1,6 @@
 package com.tson.easydemo
 
+import com.easy.aop.AopManager
 import com.tson.easy.application.EasyApplication
 
 /**
@@ -10,5 +11,6 @@ import com.tson.easy.application.EasyApplication
 class MyApplication : EasyApplication() {
     override fun onCreate() {
         super.onCreate()
+        AopManager.instance.register(this)
     }
 }
