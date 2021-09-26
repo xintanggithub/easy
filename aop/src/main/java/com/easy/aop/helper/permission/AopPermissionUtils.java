@@ -101,7 +101,7 @@ public class AopPermissionUtils {
         return false;
     }
 
-    public static void showGoSetting(final Activity activity, String rationale, String positiveButtonText, String NegativeButtonText) {
+    public static void showGoSetting(final Activity activity, String rationale, String positiveButtonText, String NegativeButtonText, final DialogEvent dialogEvent) {
         new AlertDialog.Builder(activity)
                 .setMessage(rationale)
                 .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
@@ -109,6 +109,7 @@ public class AopPermissionUtils {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         go2Setting(activity);
+                        dialogEvent.sure();
                     }
                 })
                 .setNegativeButton(NegativeButtonText, new DialogInterface.OnClickListener() {
@@ -121,7 +122,19 @@ public class AopPermissionUtils {
     }
 
     public static void showGoSetting(Activity activity, String rationale) {
-        showGoSetting(activity, rationale, activity.getString(R.string.toSetting), activity.getString(R.string.btn_cancel));
+        showGoSetting(activity, rationale, new DialogEvent() {
+            @Override
+            public void cancel() {
+            }
+
+            @Override
+            public void sure() {
+            }
+        });
+    }
+
+    public static void showGoSetting(Activity activity, String rationale, final DialogEvent dialogEvent) {
+        showGoSetting(activity, rationale, activity.getString(R.string.toSetting), activity.getString(R.string.btn_cancel), dialogEvent);
     }
 
     /**
