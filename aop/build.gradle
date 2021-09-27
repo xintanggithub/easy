@@ -33,7 +33,7 @@ android {
                 pom.project {
                     groupId 'com.easy.assembly.aop'
                     artifactId 'lib'
-                    version '1.0.4'
+                    version '1.0.5'
                     packaging 'aar'
                 }
             }

@@ -14,8 +14,9 @@ class AopManager {
 
     private lateinit var application: Application
 
-    fun register(application: Application) {
+    fun register(application: Application): AopManager {
         this.application = application
+        return instance
     }
 
     fun getApplication(): Application {
