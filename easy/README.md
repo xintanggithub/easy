@@ -4,7 +4,7 @@
 
 #### 0.1 根目录下的build.gradle添加如下代码
 
-```
+```groovy
 allprojects {
     repositories {
         google()
@@ -20,7 +20,7 @@ allprojects {
 
 #### 0.2 需要使用的module下build.gradle添加引用
 
-```
+```groovy
     implementation "com.easy.assembly.base:lib:1.0.11"
 ```
 
@@ -30,7 +30,7 @@ allprojects {
 
 新建BaseActivity
 
-```
+```kotlin
 abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>) :
     EasyBaseActivity<T, E>(modelClass) {
     
@@ -58,7 +58,7 @@ abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
 
 - 新建MainViewModel
 
-```
+```kotlin
 class MainViewModel : BaseViewModel() {
     var content = ObservableField("hello world！")
 }
@@ -66,7 +66,7 @@ class MainViewModel : BaseViewModel() {
 
 - 新建activity_main.xml
 
-```
+```kotlin
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -96,7 +96,7 @@ class MainViewModel : BaseViewModel() {
 - 新建MainActivity
 
 里面的ActivityMainBinding在上面新建activity_main.xml之后就会自动生成
-```
+```kotlin
 class MainActivity(override val layoutId: Int = R.layout.activity_main) :
     BaseActivity<ActivityMainBinding, MainViewModel>(MainViewModel::class.java) {
 
@@ -111,7 +111,7 @@ class MainActivity(override val layoutId: Int = R.layout.activity_main) :
 
 #### 1.2 自定义公共loadingView和errorView(推荐，但不是唯一方式)
 
-```
+```kotlin
 这种如果是全局只有一个LoadingViewModel，且需要根据页面做状态隔离，建议根据activity做tag区分各个页面状态。
 比如：A界面是loading中， 到B界面后，状态变为loading error，因为是全局ViewModel，所以会导致A、B都被更新为loading error，所以可以把A的loading状态单独保存，B的也单独保存，做状态隔离，即使B变更后，也不影响A的状态。
 
@@ -134,7 +134,7 @@ class MainActivity(override val layoutId: Int = R.layout.activity_main) :
 
 这里只是demo，内部逻辑可自定义
 
-```
+```kotlin
 class LoadingViewModel : ViewModel() {
 
     var loadingMessage = ObservableField("")
@@ -144,7 +144,7 @@ class LoadingViewModel : ViewModel() {
     }
 }
 ```
-```
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -180,7 +180,7 @@ class LoadingViewModel : ViewModel() {
 </layout>
 ```
 - BaseActivity处理公共布局的加载逻辑，注意注释
-```
+```kotlin
 abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>) :
     EasyBaseActivity<T, E>(modelClass) {
 
@@ -251,7 +251,7 @@ abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
 
 以上便完成了公共view的实现，下面看看在activity的业务viewModel里面怎么使用的
 
-```
+```kotlin
 class MainViewModel : BaseViewModel() {
 
     var content = ObservableField("hello world！")
@@ -266,5 +266,33 @@ class MainViewModel : BaseViewModel() {
 ```
 
 BaseFragment同理，只是更改一下继承为EasyBaseFragment即可，所以baseActivity和BaseFragment中的公共loadingView也可以抽出来，给baseActivity和BaseFragment共用。
+
+
+
+#### 1.3  不注入布局ID的使用方式
+
+- BaseActivity添加如下配置：
+
+```kotlin
+    override val layoutId: Int = -1 // 无布局
+
+    override fun bindModelType(): Int {
+        return Limit.METHOD // 通过方法反射进行初始化和model绑定
+    }
+
+    override fun viewModelType(): Int {
+        return Limit.PROJECT// viewModel生命周期跟随当前工程类，PUBLIC代表周期全局（跟随主进程）
+    }
+```
+
+- 子类继承时，可不传ID
+
+```kotlin
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(MainViewModel::class.java) {
+        
+}
+```
+
+
 
 end
