@@ -14,10 +14,17 @@ import com.tson.easy.view.LoadInterface
  *
  * @author Tson
  */
-abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>) :
-    BaseBindingLayoutView<T, E>(modelClass), LoadInterface {
+abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>) : BaseBindingLayoutView<T, E>(modelClass), LoadInterface {
 
     protected lateinit var loadingView: View
+
+    override fun bindModelType(): Int {
+        return Limit.LAYOUT_ID
+    }
+
+    override fun viewModelType(): Int {
+        return Limit.PUBLIC
+    }
 
     abstract fun defaultHideLoadingView()
 

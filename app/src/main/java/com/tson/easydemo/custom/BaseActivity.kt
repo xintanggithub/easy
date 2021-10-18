@@ -18,6 +18,9 @@ import com.tson.easydemo.model.LoadingViewModel
 abstract class BaseActivity<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>) :
     EasyBaseActivity<T, E>(modelClass) {
 
+    override val layoutId: Int
+        get() = -1
+
     // loadingView布局binding
     lateinit var loadingBinding: LoadingLayoutBinding
 
