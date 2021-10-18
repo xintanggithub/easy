@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.databinding.ViewDataBinding
+import com.tson.easy.activity.Limit
 import com.tson.easy.helper.ViewHelper
 import com.tson.easy.model.BaseViewModel
 import com.tson.easy.view.LoadInterface
@@ -18,6 +19,14 @@ abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClas
     BeforeFragment<T, E>(modelClass), LoadInterface {
 
     protected lateinit var loadingView: View
+
+    override fun bindModelType(): Int {
+        return Limit.LAYOUT_ID
+    }
+
+    override fun viewModelType(): Int {
+        return Limit.PUBLIC
+    }
 
     override fun initBefore() {}
 

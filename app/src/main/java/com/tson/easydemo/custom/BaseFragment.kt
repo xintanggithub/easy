@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.tson.easy.activity.Limit
 import com.tson.easy.fragment.EasyBaseFragment
 import com.tson.easy.model.BaseViewModel
 import com.tson.easydemo.R
@@ -17,6 +18,16 @@ import com.tson.easydemo.model.LoadingViewModel
  */
 abstract class BaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelClass: Class<E>?) :
     EasyBaseFragment<T, E>(modelClass) {
+
+    override val layoutId: Int = -1
+
+    override fun viewModelType(): Int {
+        return Limit.PUBLIC
+    }
+
+    override fun bindModelType(): Int {
+        return Limit.METHOD
+    }
 
     // loadingView布局binding
     lateinit var loadingBinding: LoadingLayoutBinding
@@ -47,7 +58,7 @@ abstract class BaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
         // dataBinding绑定view
         loadingBinding = DataBindingUtil.bind(loadingView)!!
         // 获取ViewModel
-        loadingViewModel = getViewModel(LoadingViewModel::class.java)
+        loadingViewModel = getViewModel(LoadingViewModel::class.java,false)
         // 绑定ViewModel
         loadingBinding.loading = loadingViewModel
         // 关联页面业务ViewModel和公共loadingView和errorView的核心代码，由接口实现
@@ -65,12 +76,12 @@ abstract class BaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
         // 隐藏loading 或 error
         loadingViewModel.loadingMessage.set("")
         hideRoot()
-    }
+}
 
     override fun retry() {
         //  重试
         hideRoot()
-        Toast.makeText(activity, "handle  retry ", Toast.LENGTH_SHORT).show()
+        Toast.makeText(mBinding.root.context, "handle  retry ", Toast.LENGTH_SHORT).show()
     }
 
     override fun showLoading() {

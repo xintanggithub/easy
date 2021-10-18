@@ -70,7 +70,7 @@ abstract class BaseBindingLayoutView<T : ViewDataBinding, E : BaseViewModel>(pri
         bindingEnd()
     }
 
-    private fun <T : ViewModel> getViewModel(modelClass: Class<T>): T {
+    protected fun <T : ViewModel> getViewModel(modelClass: Class<T>): T {
         return getViewModel(
             modelClass, when (viewModelType()) {
                 Limit.PROJECT -> false
