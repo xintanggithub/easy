@@ -21,7 +21,7 @@ allprojects {
 #### 0.2 需要使用的module下build.gradle添加引用
 
 ```groovy
-    implementation "com.easy.assembly.base:lib:1.0.11"
+    implementation "com.easy.assembly.base:lib:1.0.14"
 ```
 
 ### 1. Activity
@@ -109,24 +109,7 @@ class MainActivity(override val layoutId: Int = R.layout.activity_main) :
 
 以上就是基础使用方法，MainViewModel中实现逻辑，activity_main.xml处理显示，MainActivity则对他们进行绑定。
 
-#### 1.2 自定义公共loadingView和errorView(推荐，但不是唯一方式)
-
-```kotlin
-这种如果是全局只有一个LoadingViewModel，且需要根据页面做状态隔离，建议根据activity做tag区分各个页面状态。
-比如：A界面是loading中， 到B界面后，状态变为loading error，因为是全局ViewModel，所以会导致A、B都被更新为loading error，所以可以把A的loading状态单独保存，B的也单独保存，做状态隔离，即使B变更后，也不影响A的状态。
-
-
-或者不使用LoadingViewModel的这种方式，因为loadingView和errorView的处理逻辑都在你的BaseActivity中实现的，所以怎么实现，怎么处理都是自定义的。
-
-
-最快的方法：把viewModel当成普通对象使用，对如下代码进行修改：
-        // 获取ViewModel
-        loadingViewModel = getViewModel(LoadingViewModel::class.java)
-
-        改为
-        loadingViewModel = LoadingViewModel()
-
-```
+#### 1.2 自定义公共loadingView和errorView(推荐，但不是唯一方式，参考demo中的LoadingViewModel类)
 
 以下内容在上面的基础版之上添加即可
 
