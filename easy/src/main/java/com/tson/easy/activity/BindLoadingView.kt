@@ -19,11 +19,14 @@ abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClas
     protected lateinit var loadingView: View
 
     override fun bindModelType(): Int {
-        return Limit.LAYOUT_ID
+        return when (layoutId) {
+            -1 -> Limit.METHOD
+            else -> Limit.LAYOUT_ID
+        }
     }
 
     override fun viewModelType(): Int {
-        return Limit.PUBLIC
+        return Limit.PROJECT
     }
 
     abstract fun defaultHideLoadingView()
