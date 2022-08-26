@@ -3,7 +3,10 @@ package com.tson.easy.activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.ViewDataBinding
 import com.tson.easy.helper.ViewHelper.looperQueryLoadingView
 import com.tson.easy.model.BaseViewModel
@@ -65,8 +68,31 @@ abstract class BindLoadingView<T : ViewDataBinding, E : BaseViewModel>(modelClas
                     })
                 }
             } else {
-                loadingViewRoot.removeAllViews()
-                loadingViewRoot.addView(loadingView, lp)
+                if (loadingViewRoot.childCount > 0) {
+                    val childrenView = mutableListOf<View>()
+                    for (i in 0 until loadingViewRoot.childCount) {
+                        childrenView.add(loadingViewRoot.getChildAt(i))
+                    }
+                    loadingViewRoot.removeAllViews()
+                    loadingViewRoot.addView(RelativeLayout(this).also { nr ->
+                        nr.layoutParams = lp
+                        val parentView = when(loadingViewRoot) {
+                            is LinearLayout -> LinearLayout(this).also { it.layoutParams = lp }
+                            is RelativeLayout -> RelativeLayout(this).also { it.layoutParams = lp }
+                            is ConstraintLayout -> ConstraintLayout(this).also { it.layoutParams = lp }
+                            else -> FrameLayout(this).also { it.layoutParams = lp }
+                        }
+                        childrenView.onEach { cv -> parentView.addView(cv) }
+                        nr.addView(parentView, lp)
+                        nr.addView(loadingView, lp)
+                    })
+                } else {
+                    loadingViewRoot.removeAllViews()
+                    loadingViewRoot.addView(RelativeLayout(this).also { nr ->
+                        nr.layoutParams = lp
+                        nr.addView(loadingView, lp)
+                    })
+                }
             }
             initLoadingViewEnd()
             defaultHideLoadingView()

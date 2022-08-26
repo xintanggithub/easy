@@ -17,4 +17,8 @@ class LoadingViewModel : BaseViewModel() {
         loadStatus.retry()
     }
 
+    fun emptyClick() {
+
+    }
+
 }

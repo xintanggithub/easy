@@ -15,6 +15,7 @@
         android:layout_height="match_parent"
         android:background="@color/cardview_shadow_start_color"
         android:gravity="center"
+        android:onClick="@{()->loading.emptyClick()}"
         android:orientation="vertical">
 
         <TextView

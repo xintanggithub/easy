@@ -1,6 +1,5 @@
 package com.tson.easydemo.model
 
-import android.os.Handler
 import androidx.databinding.ObservableField
 import com.tson.easy.model.BaseViewModel
 import com.tson.easydemo.api.LoginRequest

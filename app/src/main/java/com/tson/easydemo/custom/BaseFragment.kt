@@ -21,12 +21,15 @@ abstract class BaseFragment<T : ViewDataBinding, E : BaseViewModel>(modelClass: 
 
     override val layoutId: Int = -1
 
-    override fun viewModelType(): Int {
-        return Limit.PUBLIC
+    override fun bindModelType(): Int {
+        return when (layoutId) {
+            -1 -> Limit.METHOD
+            else -> Limit.LAYOUT_ID
+        }
     }
 
-    override fun bindModelType(): Int {
-        return Limit.METHOD
+    override fun viewModelType(): Int {
+        return Limit.PROJECT
     }
 
     // loadingView布局binding
